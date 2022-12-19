@@ -1,0 +1,33 @@
+﻿code;category;short_name;long_name
+PART_ID;Participant;Participant ID;Participant ID
+A1;Engagement;Entertainment;Is the app fun/entertaining to use? Does it use any strategies to increase engagement through entertainment?
+A2;Engagement;Interest;Is the app interesting to use? Does it use any strategies to increase engagement by presenting its content in an interesting way?
+A3;Engagement;Customisation;Does it provide/retain all necessary settings/preferences for apps features?
+A4;Engagement;Interactivity;Does it allow user input, provide feedback, contain prompts?
+A5;Engagement;Target group;Is the app content appropriate for your target audience?
+A;Engagement;Average;Average score of engagement evaluation items
+B6;Functionality;Performance;How accurately/fast do the app features and components work?
+B7;Functionality;Ease of use;"How easy is it to learn how to use the app; how clear are the menu labels/icons and instructions?"
+B8;Functionality;Navigation;"Is moving between screens logical/accurate/appropriate/ uninterrupted; are all necessary screen links present?"
+B9;Functionality;Gestural design;Are interactions consistent and intuitive across all components/screens?
+B;Functionality;Average;Average score of functionality evaluation items
+C10;Aesthetics;Layout;Is arrangement and size of buttons/icons/menus/content on the screen appropriate or zoomable if needed?
+C11;Aesthetics;Graphics;How high is the quality/resolution of graphics used for buttons/icons/menus/content?
+C12;Aesthetics;Visual appeal;How good does the app look?
+C;Aesthetics;Average;Average score of aesthetics evaluation items
+D13;Information;Quality of information;Is app content correct, well written, and relevant to the goal/topic of the app?
+D14;Information;Quantity of information;"Is the extent coverage within the scope of the app; and comprehensive but concise?"
+D15;Information;Visual information;Is visual explanation of concepts clear, logical, correct?
+D16;Information;Credibility;Does the app come from a legitimate source?
+D;Information;Average;Average score of information evaluation items
+E1;Subjective quality;Likelihood to recommend;Would you recommend this app to people who might benefit from it?
+E2;Subjective quality;Expected usage times;How many times do you think you would use this app in the next 12 months if it was relevant to you? ([0][1-2][3-10][10-50][>50])
+E3;Subjective quality;Will you pay for its use?;Would you pay for this app?
+E4;Subjective quality;Star rating;What is your overall star rating of the app?
+F1;App-specific;Awareness;This app is likely to increase awareness of the importance of addressing tolerance to anxiety in specific places
+F2;App-specific;Knowledge;This app is likely to increase knowledge/understanding of tolerance to anxiety in specific places
+F3;App-specific;Attitudes;This app is likely to change attitudes toward improving tolerance to anxiety in specific places
+F4;App-specific;Intention to change;This app is likely to increase intentions/motivation to address tolerance to anxiety in specific places
+F5;App-specific;Help seeking;Use of this app is likely to encourage further help seeking for tolerance to anxiety in specific places
+F6;App-specific;Behaviour change;Use of this app is likely increase tolerance to anxiety in specific places
+F;App-specific;Average;Average app specific score
