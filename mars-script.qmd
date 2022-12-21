@@ -1,0 +1,169 @@
+---
+title: "Script for processing MARS instrument"
+author: "Carlos Granell"
+format: html
+---
+
+```{r}
+#| label: libraries
+library(tidyverse)
+library(magick)
+library(webshot2)
+library(gt)
+library(here)
+library(viridis)
+library(hrbrthemes)
+library(patchwork)
+```
+
+```{r}
+#| label: read-data
+
+data_file <- here::here("mars-data", "responses.csv")
+code_file <- here::here("mars-data", "codes.csv")
+
+
+codes <- read_csv2(code_file, col_names = TRUE,
+                   cols(code = col_character(),
+                        category = col_character(),
+                        short_name = col_character(),
+                        long_name = col_character()))
+
+mars <- read_csv2(data_file, col_names = TRUE,
+                  cols(.default = col_integer(),
+                       PART_ID = col_character()
+                       ))
+
+```
+
+```{r}
+#| label: data-preparation
+
+mars %>%
+  rowwise() %>% 
+  mutate(A = mean(c(A1,A2,A3,A4,A5)),
+         B = mean(c(B6,B7,B8,B9)),
+         C = mean(c(C10,C11,C12)),
+         D = mean(c(D13,D14,D15,D16)),
+         F = mean(c(F1,F2,F3,F4,F5,F6))) -> mars
+
+mars %>%
+  pivot_longer(c('A1', 'A2', 'A3', 'A4', 'A5', 'A', 
+                 'B6', 'B7', 'B8', 'B9', 'B',
+                 'C10', 'C11', 'C12', 'C',
+                 'D13', 'D14', 'D15', 'D16', 'D',
+                 'E1','E2', 'E3', 'E4',
+                 'F1','F2','F3','F4','F5','F6','F'), names_to = "code", values_to = "value") %>%
+  mutate(code = factor(code),
+         value = as.double(round(value, 2))) %>%
+  select(code, value) %>%
+  arrange(code) -> mars_long
+
+dplyr::inner_join(mars_long, codes, by="code") %>%
+  mutate(type = ifelse(short_name == "Average", "mean", "item")) %>%
+  select(-long_name) -> mars_tidy
+
+mars_tidy %>%
+  filter(category=='Engagement') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_A
+
+
+mars_tidy %>%
+  filter(category=='Functionality') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_B
+
+mars_tidy %>%
+  filter(category=='Aesthetics') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_C
+
+
+mars_tidy %>%
+  filter(category=='Information') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_D
+
+mars_tidy %>%
+  filter(category=='Subjective quality') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_E
+
+mars_tidy %>%
+  filter(category=='App-specific') %>%
+  group_by(code) %>%
+  summarise(five = list(fivenum(value))) %>%
+  tidyr::unnest(cols = c(five)) -> mars_fivenum_F
+
+
+# table with mean and sd together
+mars_tidy %>%
+  group_by(code) %>%
+  summarise(mean = round(mean(value), 2),
+              sd = round(sd(value),2)) -> mars_stat
+
+
+```
+
+```{r}
+#| label: globals-plots
+
+pal <- viridis(6)
+colorA = pal[1] 
+colorB = pal[2] 
+colorC = pal[3] 
+colorD = pal[4] 
+colorE = pal[5] 
+colorF = pal[6] 
+
+plot_width = 16 #cm
+plot_height = 10 #cm
+plot_dpi = 600
+
+plot_title_size = 13
+plot_subtitle_size = 12
+```
+
+
+```{r}
+#| label: boxplot-A
+lbl_A <- c("A1", "A2", "A3", "A4", "A5", "A")
+cat <- "Engagement"
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_A)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(aes(alpha=type),
+               width=0.5,
+               color=colorA,
+               fill=colorA) +
+  scale_alpha_discrete(range = c(0.2, 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorA, color=colorA, alpha=0.8, dotsize = 0.6) + # display every data point
+  geom_text(data = mars_fivenum_A,
+            aes(x = code, y = five, label = sprintf("%.2f", five)),
+            nudge_x = 0.45, size=3, alpha=1) +
+  labs(x=NULL, y=NULL, title=paste("Section A -", cat, "scores"),
+       subtitle="(A1) Entertainment, (A2) Interest, (A3) Customization, (A4) Interactivity, \n(A5) Target group, (A) Average Engagement score") +
+  ylim(3,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotA
+
+plotA
+
+ggsave(file = here::here("figs", "A.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+
+```
+
