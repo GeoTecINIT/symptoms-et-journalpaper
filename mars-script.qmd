@@ -2,10 +2,13 @@
 title: "Script for processing MARS instrument"
 author: "Carlos Granell"
 format: html
+
 ---
 
 ```{r}
 #| label: libraries
+#| message: false
+
 library(tidyverse)
 library(magick)
 library(webshot2)
@@ -18,21 +21,20 @@ library(patchwork)
 
 ```{r}
 #| label: read-data
+#| message: false
 
-data_file <- here::here("mars-data", "responses.csv")
 code_file <- here::here("mars-data", "codes.csv")
+data_file <- here::here("mars-data", "responses.csv")
 
-
-codes <- read_csv2(code_file, col_names = TRUE,
-                   cols(code = col_character(),
-                        category = col_character(),
-                        short_name = col_character(),
-                        long_name = col_character()))
+codes <- readr::read_csv2(code_file, col_names = TRUE,
+                          cols(code = col_character(),
+                               category = col_character(),
+                               short_name = col_character(),
+                               long_name = col_character()))
 
 mars <- read_csv2(data_file, col_names = TRUE,
                   cols(.default = col_integer(),
-                       PART_ID = col_character()
-                       ))
+                       PART_ID = col_character()))
 
 ```
 
@@ -111,6 +113,8 @@ mars_tidy %>%
 
 ```
 
+## Boxplots for each MARS section
+
 ```{r}
 #| label: globals-plots
 
@@ -133,6 +137,7 @@ plot_subtitle_size = 12
 
 ```{r}
 #| label: boxplot-A
+#| warning: false
 lbl_A <- c("A1", "A2", "A3", "A4", "A5", "A")
 cat <- "Engagement"
 
@@ -167,3 +172,514 @@ ggsave(file = here::here("figs", "A.svg"),
 
 ```
 
+```{r}
+#| label: boxplot-B
+#| warning: false
+
+lbl_B <- c("B6", "B7", "B8", "B9", "B")
+cat <- "Functionality"
+
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_B)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(aes(alpha=type), 
+               width=0.5, 
+               color=colorB, 
+               fill=colorB) + 
+  scale_alpha_discrete(range = c(0.2, 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorB, color=colorB, alpha=0.8, dotsize = 0.6) + # display every data point on the boxplot
+  geom_text(data = mars_fivenum_B, 
+            aes(x = code, y = five, label = sprintf("%.2f", five)), 
+            nudge_x = 0.45, size=3) +
+  labs(x=NULL, y=NULL, title=paste("Section B -", cat, "scores"), 
+       subtitle="(B6) Performance, (B7) Ease of use, (B8) Navigation, \n(B9) Gestural design, (B) Average Functionality score") +
+  ylim(3,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotB
+
+plotB
+
+ggsave(file = here::here("figs", "B.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+```
+
+```{r}
+#| label: boxplot-C
+#| warning: false
+
+lbl_C <- c("C10", "C11", "C12", "C")
+cat <- "Aesthetics"
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_C)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(aes(alpha=type), 
+           width=0.5, 
+           color=colorC, 
+           fill=colorC) + 
+  scale_alpha_discrete(range = c(0.2, 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorC, color=colorC, alpha=0.8, dotsize = 0.6) + # display every data point
+  geom_text(data = mars_fivenum_C, 
+            aes(x = code, y = five, label = sprintf("%.2f", five)), 
+            nudge_x = 0.45, size=3) +
+  labs(x=NULL, y=NULL, title=paste("Section C -", cat, "scores"), 
+       subtitle="(C10) Layout, (C11) Graphics, (C12) Visual appeal,\n(C) Average Aesthetics score") +
+  ylim(3,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotC
+
+plotC
+
+ggsave(file = here::here("figs", "C.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+```
+
+```{r}
+#| label: boxplot-D
+#| warning: false
+
+lbl_D <- c("D13", "D14", "D15", "D16", "D")
+cat <- "Information"
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_D)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(aes(alpha=type), 
+           width=0.5, 
+           color=colorD, 
+           fill=colorD) + 
+  scale_alpha_discrete(range = c(0.2, 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorD, color=colorD, alpha=0.8, dotsize = 0.6) + # display every data point
+  geom_text(data = mars_fivenum_D, 
+            aes(x = code, y = five, label = sprintf("%.2f", five)), 
+            nudge_x = 0.45, size=3) +
+  labs(x=NULL, y=NULL, title=paste("Section D -", cat, "scores"), 
+       subtitle="(D13) Quality of information, (D14) Quantity of information, (D15) Visual\ninformation, (D16) Credibility, (D) Average Information score") + 
+  ylim(3,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotD
+
+plotD
+
+ggsave(file = here::here("figs", "D.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+```
+
+```{r}
+#| label: boxplot-E
+#| warning: false
+
+lbl_E <- c("E1", "E2", "E3", "E4")
+cat <- "Subjective quality"
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_E)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(alpha=0.2, 
+           width=0.5, 
+           color=colorE, 
+           fill=colorE) + 
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorE, color=colorE, alpha=0.8, dotsize = 0.6) + # display every data point
+  geom_text(data = mars_fivenum_E, 
+            aes(x = code, y = five, label = sprintf("%.2f", five)), 
+            nudge_x = 0.45, size=3) +
+  labs(x=NULL, y=NULL, title="Section E - Subjective Quality scores", 
+       subtitle="(E1) Likelihood to recommend, (E2) Expected usage times (from patient\nperspective) in next 12 months, (E3) Will you pay (from patient perspective)\nfor its use?, (E4) Star rating") + 
+  ylim(2,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotE
+
+plotE
+
+ggsave(file = here::here("figs", "E.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+```
+
+```{r}
+#| label: boxplot-F
+#| warning: false
+
+lbl_F <- c("F1", "F2", "F3", "F4", "F5", "F6", "F")
+cat <- "App-specific"
+
+mars_tidy %>%
+  filter(category == cat) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_F)) %>%
+  ggplot(aes(x=code, y=value)) +
+  geom_boxplot(aes(alpha=type), 
+           width=0.5, 
+           color=colorF, 
+           fill=colorF) + 
+  scale_alpha_discrete(range = c(0.2, 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="black", alpha=1) +  # display mean as black circle
+  geom_dotplot(binaxis = "y", stackdir = "center", fill=colorF, color=colorF, alpha=0.8, dotsize = 0.6) + # display every data point
+  geom_text(data = mars_fivenum_F, 
+            aes(x = code, y = five, label = sprintf("%.2f", five)), 
+            nudge_x = 0.45, size=3) +
+  labs(x=NULL, y=NULL, title=paste("Section F -", cat, "scores to perceived anxiety in places"), 
+       subtitle="(F1) Increase awareness of the importance to increase tolerance, (F2)\nIncrease knowledge on tolerance, (F3) Change attitudes towards improving\ntolerance, (F4) Increase motivation to address tolerance, (F5) Encourage\nfurther help-seeking, (F6) Behaviour change, (F) Average App-specific score") + 
+  ylim(3,5) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(size=plot_title_size),
+    plot.subtitle = element_text(size=plot_subtitle_size)) -> plotF
+
+plotF
+
+
+ggsave(file = here::here("figs", "F.svg"),
+      width = plot_width, height = plot_height, units="cm", dpi = plot_dpi)
+
+```
+
+```{r}
+#| label: save-table-as-plot
+
+as_ggplot <- function(x, filename) {
+  path_gt_table_image <- here::here("figs")
+  gt_table_image <- gt::gtsave(x, path = path_gt_table_image, filename = filename, expand=5)
+
+  # save image in ggplot -------------------------------------------------------
+  table_img <-
+    magick::image_read(here::here("figs", filename)) %>%
+    magick::image_ggplot(interpolate = TRUE)
+
+  table_img
+}
+```
+
+```{r}
+#| label: table-A
+rowname <- dplyr::tibble(stat = c("mean", "sd"))
+cell_size = "small"
+
+mars_stat %>%
+  filter(str_starts(code, c("A"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_A)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanA
+  
+mars_stat %>%
+  filter(str_starts(code, c("A"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_A)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdA
+  
+bind_rows(meanA, sdA) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(250)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_A.png") -> tbl_A
+```
+
+
+```{r}
+#| label: table-B
+
+mars_stat %>%
+  filter(str_starts(code, c("B"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_B)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanB
+
+mars_stat %>%
+  filter(str_starts(code, c("B"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_B)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdB
+
+bind_rows(meanB, sdB) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  # gt() %>%
+  # cols_hide(columns = c(stat)) %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(250)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_B.png") -> tbl_B
+
+```
+
+
+```{r}
+#| label: table-C
+mars_stat %>%
+  filter(str_starts(code, c("C"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_C)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanC
+  
+mars_stat %>%
+  filter(str_starts(code, c("C"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_C)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdC
+  
+bind_rows(meanC, sdC) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(250)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_C.png") -> tbl_C
+```
+
+
+```{r}
+#| label: table-D
+mars_stat %>%
+  filter(str_starts(code, c("D"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_D)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanD
+  
+mars_stat %>%
+  filter(str_starts(code, c("D"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_D)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdD
+  
+bind_rows(meanD, sdD) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  # gt() %>%
+  # cols_hide(columns = c(stat)) %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(250)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_D.png") -> tbl_D
+
+```
+
+```{r}
+#| label: table-E
+
+mars_stat %>%
+  filter(str_starts(code, c("E"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_E)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanE
+  
+mars_stat %>%
+  filter(str_starts(code, c("E"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_E)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdE
+  
+bind_rows(meanE, sdE) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(250)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_E.png") -> tbl_E
+```
+
+
+```{r}
+#| label: table-F
+mars_stat %>%
+  filter(str_starts(code, c("F"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_F)) %>%
+  arrange(code) %>%
+  select(code, mean) %>%
+  pivot_wider(names_from = code, values_from = c("mean")) -> meanF
+  
+mars_stat %>%
+  filter(str_starts(code, c("F"))) %>%
+  mutate(code = forcats::fct_relevel(code, lbl_F)) %>%
+  arrange(code) %>%
+  select(code, sd) %>%
+  pivot_wider(names_from = code, values_from = c("sd")) -> sdF
+  
+bind_rows(meanF, sdF) %>%
+  bind_cols(rowname) %>%
+  gt(rowname_col = "stat") %>%
+  # gt() %>%
+  # cols_hide(columns = c(stat)) %>%
+  opt_table_lines("none") %>%
+  cols_width(
+    everything() ~ px(60)) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+
+  tab_options(
+    data_row.padding = px(1),     #Reduce the height of rows
+    table.align = "left",
+    table.width = px(7)) %>%
+
+  # Apply style to all column headers
+  tab_style(
+    locations = cells_column_labels(columns = everything()),
+    style = list(
+       cell_borders(sides = "bottom", weight = px(1)), #Give a thick border below
+       cell_text(weight = "bold")) #Make text bold)
+  ) %>%
+  tab_style(
+    style = cell_text(size = cell_size),
+    locations = cells_body(columns = everything())
+  ) %>%
+  as_ggplot(filename="tbl_F.png") -> tbl_F
+
+```
+
+```{r}
+#| label: composite-plot
+#| warning: false
+
+(plotA + plotB) / (tbl_A + tbl_B) / (plotC + plotD) /  (tbl_C + tbl_D) / (plotE + plotF) / (tbl_E + tbl_F) +
+  plot_layout(widths = c(1,1))
+
+ggsave(file = here::here("figs", "MARS_WDP.svg"),
+       width = 15, height = 20, dpi = plot_dpi)
+
+
+```
