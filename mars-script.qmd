@@ -1,7 +1,12 @@
 ---
 title: "Script for processing MARS instrument"
-author: "Carlos Granell"
-format: html
+author: "Alberto González and Carlos Granell"
+date: 2022-12-26
+abstract: "R Script to generate `Figure 5` of the paper *A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET*"
+format: 
+  html:
+    code-fold: true
+    code-tools: true
 
 ---
 
@@ -358,6 +363,8 @@ ggsave(file = here::here("figs", "F.svg"),
 
 ```
 
+## Average table for each MARS section
+
 ```{r}
 #| label: save-table-as-plot
 
@@ -671,15 +678,28 @@ bind_rows(meanF, sdF) %>%
 
 ```
 
+@fig-5 (`Figure 5` in the paper) shows the composite of the boxplots for each MARS section along with average tables 
+
 ```{r}
-#| label: composite-plot
+#| label: fig-5
 #| warning: false
+#| fig-cap: "Results obtained from the answers to each of the six sections of the MARS instrument. All items are rated using a Likert scale from 1 to 5, with two exceptions: (E2) Expected usage times in the next 12 months, with possible answers: 1 (none), 2 (1-2 times), 3 (3-10 times), 4 (10-50 times) and 5 (> 50 times); and (E3) Will to pay for its use, with possible answers: 1 (No), 3(Maybe) and 5 (Yes)"
+#| fig-width: 11
+#| fig-asp: 1.4
+#| out-width: 120%
+#| fig-align: center
 
 (plotA + plotB) / (tbl_A + tbl_B) / (plotC + plotD) /  (tbl_C + tbl_D) / (plotE + plotF) / (tbl_E + tbl_F) +
   plot_layout(widths = c(1,1))
 
+
+```
+
+```{r}
+#| label: fig-5-save
+#| warning: false
 ggsave(file = here::here("figs", "MARS_WDP.svg"),
        width = 15, height = 20, dpi = plot_dpi)
 
-
 ```
+
