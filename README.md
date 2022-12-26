@@ -5,7 +5,7 @@ R Notebook and datasets for the submitted paper *A Fully Instrumentalised Geoloc
 
 > Alberto González-Pérez, Laura Diaz-Sanahuja, Miguel Matey-Sanz, Jorge Osma, Carlos Granell, Juana Bretón-López, Sven Casteleyn
 > A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET.
-> *npj Digital Medicine*. Submitted
+> [*npj Digital Medicine*](https://www.nature.com/npjdigitalmed/) [Submitted].
 
 
 This repository is archived on Zenodo:
