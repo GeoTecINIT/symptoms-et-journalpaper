@@ -1,11 +1,11 @@
 # A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET
 
 
-R Notebook and datasets for the submitted paper *A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET*
+R Notebook and datasets for the submitted paper *Design and Development of a Smartphone-Based Geolocalized Exposure Therapy Software for Anxiety Disorders: SyMptOMS-ET*
 
 > Alberto González-Pérez, Laura Diaz-Sanahuja, Miguel Matey-Sanz, Jorge Osma, Carlos Granell, Juana Bretón-López, Sven Casteleyn
-> A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET.
-> [*npj Digital Medicine*](https://www.nature.com/npjdigitalmed/) [Submitted].
+> Design and Development of a Smartphone-Based Geolocalized Exposure Therapy Software for Anxiety Disorders: SyMptOMS-ET.
+> [*Journal of Biomedical Informatics*](https://www.sciencedirect.com/journal/journal-of-biomedical-informatics) [Submitted].
 
 
 This repository is archived on Zenodo:
