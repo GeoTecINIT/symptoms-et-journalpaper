@@ -5,7 +5,7 @@ R Notebook and datasets for the submitted paper *Design and Development of a Sma
 
 > Alberto González-Pérez, Laura Diaz-Sanahuja, Miguel Matey-Sanz, Jorge Osma, Carlos Granell, Juana Bretón-López, Sven Casteleyn
 > Design and Development of a Smartphone-Based Geolocalized Exposure Therapy Software for Anxiety Disorders: SyMptOMS-ET.
-> [*Computer Methods and Programs in Biomedicine*](https://www.sciencedirect.com/journal/computer-methods-and-programs-in-biomedicine) [Submitted].
+> [*Journal of Medical Internet Research*](https://www.jmir.org/) [Submitted].
 
 
 This repository is archived on Zenodo:
