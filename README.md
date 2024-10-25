@@ -1,4 +1,4 @@
-# A Fully Instrumentalised Geolocation- And Smartphone-Based Exposure Therapy for Anxiety Disorders: SyMptOMS-ET
+# Towards a self-applied, mobile-based geolocated exposure therapy software for anxiety disorders: SyMptOMS-ET app
 
 
 R Notebook and datasets for the follwing published article
@@ -7,7 +7,7 @@ R Notebook and datasets for the follwing published article
 > Towards a self-applied, mobile-based geolocated exposure therapy software for anxiety disorders: SyMptOMS-ET app.
 > [*Digital Health*](https://journals.sagepub.com/home/dhj), 10, 2024. ISSN 2055-2076.
 
-[![Paper DOI](https://img.shields.io/badge/Paper%20DOI-https://doi.org/10.1177/20552076241283942-yellow.svg)](https://doi.org/10.1177/20552076241283942)
+[![Paper DOI](https://img.shields.io/badge/DOI-10.1177/20552076241283942-yellow.svg)](https://doi.org/10.1177/20552076241283942)
 
 
 This repository is archived on Zenodo:
